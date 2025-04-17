@@ -5,7 +5,7 @@
 -- when this script is imported by another resource using the import() function
 local IS_IMPORTED = false
 
-local VALID_ELEMENT_TYPES = { "vehicle", "ped", "player", "object", "pickup" }
+local VALID_ELEMENT_TYPES = { "vehicle", "ped", "player", "object", "building", "pickup" }
 
 local isClientsideScript = localPlayer ~= nil
 
@@ -14,6 +14,7 @@ local newmodelsUtils = {}
 -- MTA Function overrides:
 
 createObjectMTA = createObject
+createBuildingMTA = createBuilding
 createVehicleMTA = createVehicle
 getVehicleTypeMTA = getVehicleType
 createPedMTA = createPed
@@ -29,7 +30,7 @@ newmodelsUtils.resources = {}
 
 newmodelsUtils.getSharedCustomModelsTbl = function()
     if IS_IMPORTED then
-        return exports["newmodels_azul"]:getCustomModels()
+        return exports["newmodels"]:getCustomModels()
     end
     -- Script is running within this resource, so we can access the table directly
     return customModels
@@ -37,7 +38,7 @@ end
 
 newmodelsUtils.getSharedElementModelsTbl = function()
     if IS_IMPORTED then
-        return exports["newmodels_azul"]:getElementModels()
+        return exports["newmodels"]:getElementModels()
     end
     -- Script is running within this resource, so we can access the table directly
     return elementModels
@@ -45,7 +46,7 @@ end
 
 newmodelsUtils.setElementCustomModel = function(...)
     if IS_IMPORTED then
-        return exports["newmodels_azul"]:setElementCustomModel(...)
+        return exports["newmodels"]:setElementCustomModel(...)
     end
     return setElementCustomModel(...)
 end
@@ -58,7 +59,7 @@ function isCustomModelCompatible(id, elementOrElementType)
     if not customInfo then return false end
 
     local elementType = type(elementOrElementType) == "string" and elementOrElementType or getElementType(elementOrElementType)
-    if elementType == "object" or elementType == "pickup" then
+    if elementType == "object" or elementType == "pickup" or elementType == "building" then
         return customInfo.type == "object"
     elseif elementType == "ped" or elementType == "player" then
         return customInfo.type == "ped"
@@ -126,7 +127,7 @@ function isDefaultID(elementType, id)
                 return true
             end
         end
-    elseif elementType == "object" or elementType == "pickup" then
+    elseif elementType == "object" or elementType == "pickup" or elementType == "building" then
         return newmodelsUtils.isDefaultObjectID(id)
     elseif elementType == "vehicle" then
         for _, id2 in pairs(IDS_VEHICLES) do
@@ -176,6 +177,8 @@ end
 newmodelsUtils.createElementWithModel = function(elementType, modelid, ...)
     if elementType == "object" then
         return createObjectMTA(modelid, ...)
+    elseif elementType == "building" then
+        return createBuildingMTA(modelid, ...)
     elseif elementType == "vehicle" then
         return createVehicleMTA(modelid, ...)
     elseif elementType == "ped" then
@@ -206,6 +209,13 @@ function createObject(id, ...)
     local object = newmodelsUtils.createElementSafe("object", id, ...)
     newmodelsUtils.setElementResource(object, sourceResource)
     return object
+end
+
+function createBuilding(id, ...)
+    assert(type(id) == "number", "Invalid model ID passed: " .. tostring(id))
+    local building = newmodelsUtils.createElementSafe("building", id, ...)
+    newmodelsUtils.setElementResource(building, sourceResource)
+    return building
 end
 
 function createVehicle(id, ...)

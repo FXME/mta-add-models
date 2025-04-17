@@ -1,5 +1,5 @@
-addEvent("newmodels_azul:receiveCustomModels", true)
-addEvent("newmodels_azul:setElementCustomModel", true)
+addEvent("newmodels:receiveCustomModels", true)
+addEvent("newmodels:setElementCustomModel", true)
 
 loadedModels = {}
 
@@ -79,7 +79,7 @@ local function finishLoadCustomModel(customModel)
     if customInfo.type == "ped" then
         elementTypes = { "ped", "player" }
     elseif customInfo.type == "object" then
-        elementTypes = { "object", "pickup" }
+        elementTypes = { "object", "building", "pickup" }
     end
 
     if col and not col.isReused then
@@ -316,6 +316,7 @@ local function freeAllocatedModel(customModel)
         if not isCustomModelInUse(customModel) then
             freeAllocatedModelNow(customModel)
         end
+
         currFreeIdDelay = currFreeIdDelay - FREE_ID_DELAY_STEP
     end, currFreeIdDelay, 1)
 end
@@ -331,7 +332,7 @@ local function attemptApplyElementCustomModel(element)
     end
 end
 
-addEventHandler("newmodels_azul:setElementCustomModel", root, function(id)
+addEventHandler("newmodels:setElementCustomModel", root, function(id)
     if not isValidElement(source) then return end
     id = tonumber(id) or nil
     local oldCustomModel = elementModels[source]
@@ -340,7 +341,9 @@ addEventHandler("newmodels_azul:setElementCustomModel", root, function(id)
     end
     elementModels[source] = id
 
-    if not isElementStreamedIn(source) then return end
+    if getElementType( source ) ~= "building" then
+        if not isElementStreamedIn(source) then return end
+    end
     attemptApplyElementCustomModel(source)
 end)
 
@@ -379,7 +382,7 @@ local function restoreElementBaseModels()
     end
 end
 
-addEventHandler("newmodels_azul:receiveCustomModels", resourceRoot, function(customModelsFromServer, elementModelsFromServer)
+addEventHandler("newmodels:receiveCustomModels", resourceRoot, function(customModelsFromServer, elementModelsFromServer)
     restoreElementBaseModels()
 
     -- Unload all loaded models

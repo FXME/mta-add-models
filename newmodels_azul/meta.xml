@@ -1,5 +1,5 @@
 <meta>
-    <info author="FernandoMTA" version="5.2.0" type="script" name="newmodels_azul"
+    <info author="FernandoMTA" version="5.2.0" type="script" name="newmodels"
     description="Adds new vehicle/ped/object models, automatically synced with all players."/>
     
     <!-- IMPORTANT TO HAVE THIS VERSION OR HIGHER SO THAT IT WORKS AS EXPECTED
@@ -20,6 +20,7 @@
     <export function="setElementCustomModel" type="shared"/>
     <export function="isDefaultID" type="shared"/>
     <export function="createObject" type="shared"/>
+    <export function="createBuilding" type="shared"/>
     <export function="createVehicle" type="shared"/>	
     <export function="getVehicleType" type="shared"/>	
     <export function="createPed" type="shared"/>
@@ -34,29 +35,8 @@
     <export function="isValidElement" type="shared"/>
     <export function="getValidElementTypes" type="shared"/>
 
-    <!-- Files -->
-    <file src="models/**/*.col"/>
-    <file src="models/**/*.txd"/>
-    <file src="models/**/*.dff"/>
-
-    <!-- ............................................................................... -->
-    <!-- OPTIONAL THINGS: .............................................................. -->
-
-    <!-- Update Checker (RECOMMENDED, please keep this to be warned of new releases!) -->
-    <script src="scripts/optional/update_checker/s_update_checker.lua" type="server"/>
-    <aclrequest>
-        <right name="function.fetchRemote" access="true"/>
-    </aclrequest>
-
-    <!-- NandoCrypt Support (these files and lines can be removed) -->
-    <script src="scripts/optional/nando_crypt/nando_decrypter" type="client" cache="false"/>
-    <file src="models/**/*.col.nandocrypt"/>
-    <file src="models/**/*.txd.nandocrypt"/>
-    <file src="models/**/*.dff.nandocrypt"/>
-
-    <!-- Debugging / Testing (remove this for a production server) -->
-    <script src="scripts/optional/debug/g_debug.lua" type="shared"/>
-    <script src="scripts/optional/debug/c_debug.lua" type="client"/>
-    <script src="scripts/optional/debug/s_debug.lua" type="server"/>
-
+    <!-- Custom Object -->
+    <file src="models/object/1337/carshop_elite/100000.dff"/>
+    <file src="models/object/1337/carshop_elite/100000.txd"/>
+    <file src="models/object/1337/carshop_elite/100000.col"/>
 </meta>
